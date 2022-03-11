@@ -94,6 +94,14 @@ internal class PhoneBookTest {
         assertTrue(book2.addPhone("Васильев Дмитрий", "+79217654321"))
         assertTrue(book2.addPhone("Иванов Петр", "+79211234567"))
         assertTrue(book == book2)
+        val book3 = PhoneBook()
+        assertTrue(book3.addHuman("Васильев Дмитрий"))
+        assertTrue(book3.addHuman("Иванов Петр"))
+        assertTrue(book3.addPhone("Васильев Дмитрий", "+78121234567"))
+        assertTrue(book3.addPhone("Васильев Дмитрий", "+79217654321"))
+        assertTrue(book3.addPhone("Иванов Петр", "+79211234567"))
+        assertFalse(book == book3)
+        assertFalse(book == book3)
     }
 
     @Test

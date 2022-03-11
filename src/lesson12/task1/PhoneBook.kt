@@ -3,6 +3,7 @@
 package lesson12.task1
 
 
+
 /**
  * Класс "Телефонная книга".
  *
@@ -19,7 +20,7 @@ package lesson12.task1
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
-    private var map = mutableMapOf<String, List<String>?>()
+    private val map = mutableMapOf<String, MutableList<String>>()
 
     /**
      * Добавить человека.
@@ -30,7 +31,7 @@ class PhoneBook {
     fun addHuman(name: String): Boolean {
         if (name in map.keys) return false
         else {
-            map[name] = null
+            map[name] = mutableListOf()
         }
         return true
     }
@@ -58,12 +59,11 @@ class PhoneBook {
      */
     fun addPhone(name: String, phone: String): Boolean {
         for ((_, value) in map) {
-            if (value?.contains(phone) == true) return false
+            if (value.contains(phone)) return false
         }
         if (name !in map.keys) return false
         else {
-            if (map[name] == null) map[name] = listOf(phone)
-            if (map[name] != null) map[name] = map[name]?.plus(listOf(phone))
+            map[name]?.add(phone)
         }
         return true
     }
@@ -76,11 +76,11 @@ class PhoneBook {
      */
     fun removePhone(name: String, phone: String): Boolean {
         for ((key, value) in map) {
-            if (key == name && value?.contains(phone) == false) return false
+            if (key == name && !value.contains(phone)) return false
         }
         if (name !in map.keys) return false
         else {
-            map[name] = map[name]?.filter { it != phone }
+            map[name]?.remove(phone)
         }
         return true
     }
@@ -89,10 +89,9 @@ class PhoneBook {
      * Вернуть все номера телефона заданного человека.
      * Если этого человека нет в книге, вернуть пустой список
      */
-    fun phones(name: String): Set<String> {
-        return if (name !in map.keys || map[name] == null) setOf()
-        else map[name]!!.toSet()
-    }
+    fun phones(name: String): Set<String> = if (name !in map.keys || map[name]?.isEmpty() == true) setOf()
+    else map[name]!!.toSet()
+
 
     /**
      * Вернуть имя человека по заданному номеру телефона.
@@ -100,7 +99,7 @@ class PhoneBook {
      */
     fun humanByPhone(phone: String): String? {
         for ((key, value) in map) {
-            if (value?.contains(phone) == true) return key
+            if (value.contains(phone)) return key
         }
         return null
     }
@@ -111,21 +110,25 @@ class PhoneBook {
      * Порядок людей / порядок телефонов в книге не должен иметь значения.
      */
     override fun equals(other: Any?): Boolean {
-        val book = this.map
-        var book2 = mutableMapOf<String, List<String>?>()
-        if (other is PhoneBook) book2 = other.map
-        else return false
-        val list = mutableListOf<String>()
-        for ((key, _) in book2) list.add(key)
-        val result = book - list
-        return result.isEmpty() && book.size == book2.size
+        val set = mutableSetOf<Pair<String, List<String>>>()
+        val setOther = mutableSetOf<Pair<String, List<String>>>()
+        if (other is PhoneBook) {
+            for ((key, value) in other.map) {
+                setOther.add(Pair(key, value.sorted()))
+            }
+        } else return false
+        for ((key, value) in this.map) {
+            set.add(Pair(key, value.sorted()))
+        }
+        return set == setOther
     }
 
     override fun hashCode(): Int {
         var hash = 21
-        hash = 31 * hash + map.size
-        hash += map.forEach { it.value }.hashCode()
-        hash += map.forEach { it.key }.hashCode()
+        for ((key, value) in this.map) {
+            hash += 7 * key.hashCode()
+            hash += 7 * value.sorted().hashCode()
+        }
         return hash
     }
 }

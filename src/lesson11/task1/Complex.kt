@@ -9,9 +9,29 @@ import lesson1.task1.sqr
  * Фабричный метод для создания комплексного числа из строки вида x+yi
  */
 fun Complex(s: String): Complex {
-    if (s.contains("-"))
-        return Complex(s.split("-")[0].toDouble(), s.split("-")[1].split("i")[0].toDouble() * -1.0)
-    return Complex(s.split("+")[0].toDouble(), s.split("+")[1].split("i")[0].toDouble())
+    val parts = s.split("""[+-]""".toRegex())
+    when (parts.size) {
+        2 ->
+            return if (s.contains("-")) {
+                val re = parts[0].toDouble()
+                val im = -parts[1].dropLast(1).toDouble()
+                Complex(re, im)
+            } else {
+                val re = parts[0].toDouble()
+                val im = parts[1].dropLast(1).toDouble()
+                Complex(re, im)
+            }
+        3 -> return if (s.count { it == '-' } == 2) {
+            val re = -parts[1].toDouble()
+            val im = -parts[2].dropLast(1).toDouble()
+            Complex(re, im)
+        } else {
+            val re = -parts[1].toDouble()
+            val im = parts[2].dropLast(1).toDouble()
+            Complex(re, im)
+        }
+    }
+    return Complex(1.0, 1.0)
 }
 
 /**
@@ -77,4 +97,3 @@ class Complex(val re: Double, val im: Double) {
         return "$sb"
     }
 }
-

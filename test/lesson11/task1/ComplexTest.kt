@@ -48,4 +48,12 @@ internal class ComplexTest {
         assertApproxEquals(Complex(1.0, 2.0), Complex("1+2i"), 1e-12)
         assertApproxEquals(Complex(1.0, 0.0), Complex(1.0), 1e-12)
     }
+
+    @Test
+    fun complex() {
+        assertEquals(Complex(-1.0, -8.0), Complex("-1-8i"))
+        assertEquals(Complex(-1.0, 5.0), Complex("-1+5i"))
+        assertEquals(Complex(5.0, -10.0), Complex("5-10i"))
+        assertEquals(Complex(2.0, 7.0), Complex("2+7i"))
+    }
 }
